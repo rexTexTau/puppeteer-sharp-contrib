@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using PuppeteerSharp.Input;
 
 namespace PuppeteerSharp.Contrib.Extensions
 {
@@ -285,8 +286,9 @@ namespace PuppeteerSharp.Contrib.Extensions
         /// </summary>
         /// <param name="elementHandle">An <see cref="IElementHandle"/>.</param>
         /// <param name="isCircular"><c>true</c> if the element is circular.</param>
+        /// <param name="button">Mouse button to click with.</param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-        public static async Task ClickAtRandomPointAsync(this IElementHandle elementHandle, bool isCircular = false)
+        public static async Task ClickAtRandomPointAsync(this IElementHandle elementHandle, bool isCircular = false, MouseButton button = MouseButton.Left)
         {
             Random rnd = new();
             var box = await elementHandle.BoundingBoxAsync();
@@ -309,6 +311,7 @@ namespace PuppeteerSharp.Contrib.Extensions
                     await elementHandle.ClickAsync(new PuppeteerSharp.Input.ClickOptions
                     {
                         OffSet = new Offset((decimal)x, (decimal)y),
+                        Button = button,
                     });
                 }
                 else
