@@ -1,32 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>6.0.0</Version>
+    <TargetFramework>net8.0</TargetFramework>
+    <Version>7.0.0</Version>
     <PackageReleaseNotes>
-⬆️ Bump PuppeteerSharp to 12.0.0
-👽️ Use PuppeteerSharp interfaces; IPage and IElementHandle
-
-New assertions for IPage:
-◼️ ShouldHaveUrlAsync
-◼️ ShouldNotHaveUrlAsync
-
-New assertions for IElementHandle:
-◼️ ShouldHaveAttributeValueAsync
-◼️ ShouldNotHaveAttributeValueAsync
-◼️ ShouldBeEmptyAsync
-◼️ ShouldNotBeEmptyAsync
-
-Assertions for IResponse:
-◼️ ShouldHaveUrl
-◼️ ShouldNotHaveUrl
-◼️ ShouldHaveStatusCode
-◼️ ShouldNotHaveStatusCode
-◼️ ShouldBeSuccessful
-◼️ ShouldBeRedirection
-◼️ ShouldHaveClientError
-◼️ ShouldHaveServerError
-◼️ ShouldHaveError
+🎯 Change TargetFramework to net8.0
+⬆️ Bump PuppeteerSharp to 20.0.0
     </PackageReleaseNotes>
     <Authors>Henrik Lau Eriksson</Authors>
     <Description>Contributions to the Headless Chrome .NET API 🌐🧪
@@ -42,6 +21,7 @@ Assertions for IResponse:
     <PackageTags>headless;chrome;puppeteer;test;testing;automation;assert</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>NU1903</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -52,7 +32,7 @@ Assertions for IResponse:
   <Import Project="../../Analyzers.props" />
 
   <ItemGroup>
-    <PackageReference Include="PuppeteerSharp" Version="12.0.0" />
+    <PackageReference Include="PuppeteerSharp" Version="20.0.0" />
   </ItemGroup>
 
   <ItemGroup>

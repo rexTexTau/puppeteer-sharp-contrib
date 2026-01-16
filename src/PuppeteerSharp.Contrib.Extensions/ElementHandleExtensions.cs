@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using PuppeteerSharp.Input;
+using System.Text.Json;
 
 namespace PuppeteerSharp.Contrib.Extensions
 {
@@ -148,9 +147,9 @@ namespace PuppeteerSharp.Contrib.Extensions
         /// <seealso href="https://developer.mozilla.org/en-US/docs/Web/API/Element/classList"/>
         public static async Task<string[]> ClassListAsync(this IElementHandle elementHandle)
         {
-            var json = await elementHandle.EvaluateFunctionWithGuardAsync<JObject>("element => element.classList").ConfigureAwait(false);
-            var dictionary = json.ToObject<Dictionary<string, string>>();
-            return dictionary?.Values.ToArray() ?? new string[0];
+            var json = await elementHandle.EvaluateFunctionWithGuardAsync<JsonElement>("element => element.classList").ConfigureAwait(false);
+            var dictionary = json.Deserialize<Dictionary<string, string>>();
+            return dictionary?.Values.ToArray() ?? [];
         }
 
         /// <summary>
@@ -201,7 +200,7 @@ namespace PuppeteerSharp.Contrib.Extensions
         /// </summary>
         /// <param name="elementHandle">An <see cref="IElementHandle"/>.</param>
         /// <returns><c>true</c> if the element is checked.</returns>
-        /// <remarks><![CDATA[Elements: <command>, <input>]]></remarks>
+        /// <remarks><![CDATA[Elements: <input>]]></remarks>
         public static async Task<bool> IsCheckedAsync(this IElementHandle elementHandle)
         {
             return await elementHandle.EvaluateFunctionWithGuardAsync<bool>("element => element.checked").ConfigureAwait(false);
@@ -212,7 +211,7 @@ namespace PuppeteerSharp.Contrib.Extensions
         /// </summary>
         /// <param name="elementHandle">An <see cref="IElementHandle"/>.</param>
         /// <returns><c>true</c> if the element is disabled.</returns>
-        /// <remarks><![CDATA[Elements: <button>, <command>, <fieldset>, <input>, <keygen>, <optgroup>, <option>, <select>, <textarea>]]></remarks>
+        /// <remarks><![CDATA[Elements: <button>, <fieldset>, <input>, <optgroup>, <option>, <select>, <textarea>]]></remarks>
         public static async Task<bool> IsDisabledAsync(this IElementHandle elementHandle)
         {
             return await elementHandle.EvaluateFunctionWithGuardAsync<bool>("element => element.disabled").ConfigureAwait(false);
@@ -223,7 +222,7 @@ namespace PuppeteerSharp.Contrib.Extensions
         /// </summary>
         /// <param name="elementHandle">An <see cref="IElementHandle"/>.</param>
         /// <returns><c>true</c> if the element is enabled.</returns>
-        /// <remarks><![CDATA[Elements: <button>, <command>, <fieldset>, <input>, <keygen>, <optgroup>, <option>, <select>, <textarea>]]></remarks>
+        /// <remarks><![CDATA[Elements: <button>, <fieldset>, <input>, <optgroup>, <option>, <select>, <textarea>]]></remarks>
         public static async Task<bool> IsEnabledAsync(this IElementHandle elementHandle)
         {
             return !await elementHandle.IsDisabledAsync().ConfigureAwait(false);
@@ -256,7 +255,7 @@ namespace PuppeteerSharp.Contrib.Extensions
         /// </summary>
         /// <param name="elementHandle">An <see cref="IElementHandle"/>.</param>
         /// <returns><c>true</c> if the element has focus.</returns>
-        /// <remarks><![CDATA[Elements: <button>, <input>, <keygen>, <select>, <textarea>]]></remarks>
+        /// <remarks><![CDATA[Elements: <button>, <input>, <select>, <textarea>]]></remarks>
         /// <seealso href="https://developer.mozilla.org/en-US/docs/Web/API/DocumentOrShadowRoot/activeElement"/>
         public static async Task<bool> HasFocusAsync(this IElementHandle elementHandle)
         {

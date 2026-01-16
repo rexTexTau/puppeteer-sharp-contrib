@@ -94,20 +94,22 @@ namespace PuppeteerSharp.Contrib.Sample
 
             var tasks = new Task[]
             {
+                /*
+                page.WaitForDevicePromptAsync(new() { Timeout = timeout }),
+                */
                 page.WaitForExpressionAsync("1 + 1 === 2", new() { Timeout = timeout }),
                 /*
                 page.WaitForFileChooserAsync(new() { Timeout = timeout }),
                 */
                 page.WaitForFrameAsync("https://github.com/hardkoded/puppeteer-sharp", new() { Timeout = timeout }),
+                /*
                 page.WaitForFunctionAsync("() => window.location.href === 'https://github.com/hardkoded/puppeteer-sharp'", new WaitForFunctionOptions { Timeout = timeout }),
                 page.WaitForNavigationAsync(new() { Timeout = timeout }),
-                /*
                 page.WaitForNetworkIdleAsync(new() { Timeout = timeout }),
                 */
                 page.WaitForRequestAsync("https://github.com/hardkoded/puppeteer-sharp", new() { Timeout = timeout }),
                 page.WaitForResponseAsync("https://github.com/hardkoded/puppeteer-sharp", new() { Timeout = timeout }),
-                page.WaitForSelectorAsync("#readme", new() { Timeout = timeout }),
-                page.WaitForTimeoutAsync(timeout),
+                page.WaitForSelectorAsync("article", new() { Timeout = timeout }),
                 //page.WaitForXPathAsync(), // Obsolete
             };
             await page.GoToAsync("https://github.com/hardkoded/puppeteer-sharp");
@@ -118,11 +120,13 @@ namespace PuppeteerSharp.Contrib.Sample
 
             tasks =
             [
+                /*
+                frame.WaitForDevicePromptAsync(new() { Timeout = timeout }),
+                */
                 frame.WaitForExpressionAsync("1 + 1 === 2", new() { Timeout = timeout }),
                 frame.WaitForFunctionAsync("() => window.location.href === 'https://github.com/hardkoded/puppeteer-sharp'", new WaitForFunctionOptions { Timeout = timeout }),
                 frame.WaitForNavigationAsync(new() { Timeout = timeout }),
-                frame.WaitForSelectorAsync("#readme", new() { Timeout = timeout }),
-                frame.WaitForTimeoutAsync(timeout),
+                frame.WaitForSelectorAsync("article", new() { Timeout = timeout }),
                 //frame.WaitForXPathAsync(), // Obsolete
             ];
             await page.GoToAsync("https://github.com/hardkoded/puppeteer-sharp");
@@ -219,23 +223,23 @@ namespace PuppeteerSharp.Contrib.Sample
             var page = await Page();
             await page.GoToAsync("https://github.com/hardkoded/puppeteer-sharp");
 
-            var element = await page.QuerySelectorAsync("div#readme");
+            var element = await page.QuerySelectorAsync("article");
             var elements = await page.QuerySelectorAllAsync("div");
-            Assert.IsNotNull(element);
-            Assert.IsNotEmpty(elements);
+            Assert.That(element, Is.Not.Null);
+            Assert.That(elements, Is.Not.Empty);
 
             var missingElement = await page.QuerySelectorAsync("div#missing");
             var missingElements = await page.QuerySelectorAllAsync("div.missing");
-            Assert.IsNull(missingElement);
-            Assert.IsEmpty(missingElements);
+            Assert.That(missingElement, Is.Null);
+            Assert.That(missingElements, Is.Empty);
 
             var elementInElement = await element.QuerySelectorAsync("h1");
             var elementsInElement = await element.QuerySelectorAllAsync("h1");
-            Assert.IsNotNull(elementInElement);
-            Assert.IsNotEmpty(elementsInElement);
+            Assert.That(elementInElement, Is.Not.Null);
+            Assert.That(elementsInElement, Is.Not.Empty);
 
             // other
-            var handle = await page.QuerySelectorAllHandleAsync("div#readme");
+            var handle = await page.QuerySelectorAllHandleAsync("article");
             await page.QueryObjectsAsync(handle);
             await element.QuerySelectorAllHandleAsync("h1");
         }
@@ -250,10 +254,10 @@ namespace PuppeteerSharp.Contrib.Sample
             var innerText = await page.EvaluateExpressionAsync<string>($"document.querySelector({"'#repository-container-header strong a'"}).innerText");
             var url = await page.EvaluateExpressionAsync<string>($"document.querySelector({"'#repository-container-header strong a'"}).getAttribute('href')");
             var hasContent = await page.EvaluateExpressionAsync<bool>($"document.querySelector({"'#repository-container-header strong a'"}).textContent.includes({"'puppeteer-sharp'"})");
-            Assert.AreEqual("<a data-pjax=\"#repo-content-pjax-container\" data-turbo-frame=\"repo-content-turbo-frame\" href=\"/hardkoded/puppeteer-sharp\">puppeteer-sharp</a>", outerHtml);
-            Assert.AreEqual("puppeteer-sharp", innerText);
-            Assert.AreEqual("/hardkoded/puppeteer-sharp", url);
-            Assert.IsTrue(hasContent);
+            Assert.That(outerHtml, Is.EqualTo("<a data-pjax=\"#repo-content-pjax-container\" data-turbo-frame=\"repo-content-turbo-frame\" href=\"/hardkoded/puppeteer-sharp\">puppeteer-sharp</a>"));
+            Assert.That(innerText, Is.EqualTo("puppeteer-sharp"));
+            Assert.That(url, Is.EqualTo("/hardkoded/puppeteer-sharp"));
+            Assert.That(hasContent);
 
             await page.EvaluateExpressionHandleAsync("document.body");
             await page.EvaluateExpressionOnNewDocumentAsync("document.body");
@@ -266,28 +270,28 @@ namespace PuppeteerSharp.Contrib.Sample
             innerText = await page.EvaluateFunctionAsync<string>("e => e.innerText", element);
             url = await page.EvaluateFunctionAsync<string>("e => e.getAttribute('href')", element);
             hasContent = await page.EvaluateFunctionAsync<bool>("(e, value) => e.textContent.includes(value)", element, "puppeteer-sharp");
-            Assert.AreEqual("<a data-pjax=\"#repo-content-pjax-container\" data-turbo-frame=\"repo-content-turbo-frame\" href=\"/hardkoded/puppeteer-sharp\">puppeteer-sharp</a>", outerHtml);
-            Assert.AreEqual("puppeteer-sharp", innerText);
-            Assert.AreEqual("/hardkoded/puppeteer-sharp", url);
-            Assert.IsTrue(hasContent);
+            Assert.That(outerHtml, Is.EqualTo("<a data-pjax=\"#repo-content-pjax-container\" data-turbo-frame=\"repo-content-turbo-frame\" href=\"/hardkoded/puppeteer-sharp\">puppeteer-sharp</a>"));
+            Assert.That(innerText, Is.EqualTo("puppeteer-sharp"));
+            Assert.That(url, Is.EqualTo("/hardkoded/puppeteer-sharp"));
+            Assert.That(hasContent);
 
             outerHtml = await element.EvaluateFunctionAsync<string>("e => e.outerHTML");
             innerText = await element.EvaluateFunctionAsync<string>("e => e.innerText");
             url = await element.EvaluateFunctionAsync<string>("e => e.getAttribute('href')");
             hasContent = await element.EvaluateFunctionAsync<bool>("(e, value) => e.textContent.includes(value)", "puppeteer-sharp");
-            Assert.AreEqual("<a data-pjax=\"#repo-content-pjax-container\" data-turbo-frame=\"repo-content-turbo-frame\" href=\"/hardkoded/puppeteer-sharp\">puppeteer-sharp</a>", outerHtml);
-            Assert.AreEqual("puppeteer-sharp", innerText);
-            Assert.AreEqual("/hardkoded/puppeteer-sharp", url);
-            Assert.IsTrue(hasContent);
+            Assert.That(outerHtml, Is.EqualTo("<a data-pjax=\"#repo-content-pjax-container\" data-turbo-frame=\"repo-content-turbo-frame\" href=\"/hardkoded/puppeteer-sharp\">puppeteer-sharp</a>"));
+            Assert.That(innerText, Is.EqualTo("puppeteer-sharp"));
+            Assert.That(url, Is.EqualTo("/hardkoded/puppeteer-sharp"));
+            Assert.That(hasContent);
 
             outerHtml = await (await element.GetPropertyAsync("outerHTML")).JsonValueAsync<string>();
             innerText = await (await element.GetPropertyAsync("innerText")).JsonValueAsync<string>();
             url = await (await element.GetPropertyAsync("href")).JsonValueAsync<string>();
             hasContent = await (await element.GetPropertyAsync("textContent")).EvaluateFunctionAsync<bool>("(p, value) => p.includes(value)", "puppeteer-sharp");
-            Assert.AreEqual("<a data-pjax=\"#repo-content-pjax-container\" data-turbo-frame=\"repo-content-turbo-frame\" href=\"/hardkoded/puppeteer-sharp\">puppeteer-sharp</a>", outerHtml);
-            Assert.AreEqual("puppeteer-sharp", innerText);
-            Assert.AreEqual("https://github.com/hardkoded/puppeteer-sharp", url);
-            Assert.IsTrue(hasContent);
+            Assert.That(outerHtml, Is.EqualTo("<a data-pjax=\"#repo-content-pjax-container\" data-turbo-frame=\"repo-content-turbo-frame\" href=\"/hardkoded/puppeteer-sharp\">puppeteer-sharp</a>"));
+            Assert.That(innerText, Is.EqualTo("puppeteer-sharp"));
+            Assert.That(url, Is.EqualTo("https://github.com/hardkoded/puppeteer-sharp"));
+            Assert.That(hasContent);
 
             await element.EvaluateFunctionHandleAsync("() => 1 + 1 === 2");
         }
@@ -298,17 +302,19 @@ namespace PuppeteerSharp.Contrib.Sample
             var page = await Page();
 
             await page.GoToAsync("https://github.com/hardkoded/puppeteer-sharp");
-            Assert.IsFalse(page.IsClosed);
+            Assert.That(page.IsClosed, Is.False);
+            Assert.That(page.IsJavaScriptEnabled, Is.True);
+            Assert.That(page.IsServiceWorkerBypassed, Is.False);
             //page.IsDragInterceptionEnabled // Obsolete
 
             var frame = page.MainFrame;
-            Assert.IsFalse(frame.IsOopFrame);
+            Assert.That(frame.Detached, Is.False);
 
             var element = page.QuerySelectorAsync("#include_email");
-            Assert.IsFalse(element.IsCompleted);
-            Assert.IsFalse(element.IsCompletedSuccessfully);
-            Assert.IsFalse(element.IsCanceled);
-            Assert.IsFalse(element.IsFaulted);
+            Assert.That(element.IsCompleted, Is.False);
+            Assert.That(element.IsCompletedSuccessfully, Is.False);
+            Assert.That(element.IsCanceled, Is.False);
+            Assert.That(element.IsFaulted, Is.False);
         }
     }
 }

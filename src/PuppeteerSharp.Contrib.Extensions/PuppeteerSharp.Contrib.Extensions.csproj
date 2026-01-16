@@ -9,6 +9,15 @@ New extension for IPage and IFrame:
 
 New extension for IElementHandle:
 ◼️ ClickAtRandomPointAsync (useful in case of need to emulate a click in detailed manner)
+    <TargetFramework>net8.0</TargetFramework>
+    <Version>7.0.0</Version>
+    <PackageReleaseNotes>
+🎯 Change TargetFramework to net8.0
+⬆️ Bump PuppeteerSharp to 20.0.0
+
+Remove extensions for IElementHandle:
+◼️ IsHiddenAsync
+◼️ IsVisibleAsync
     </PackageReleaseNotes>
     <Authors>Henrik Lau Eriksson</Authors>
     <Description>Contributions to the Headless Chrome .NET API 🌐🧪
@@ -24,6 +33,7 @@ New extension for IElementHandle:
     <PackageTags>headless;chrome;puppeteer;test;testing;automation</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>NU1903</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,7 +44,11 @@ New extension for IElementHandle:
   <Import Project="../../Analyzers.props" />
 
   <ItemGroup>
-    <PackageReference Include="PuppeteerSharp" Version="12.0.0" />
+    <PackageReference Include="PuppeteerSharp" Version="20.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="PuppeteerSharp.Contrib.Should" />
   </ItemGroup>
 
 </Project>

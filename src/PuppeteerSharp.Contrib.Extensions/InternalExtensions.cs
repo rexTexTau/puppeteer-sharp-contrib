@@ -12,14 +12,14 @@ namespace PuppeteerSharp.Contrib.Extensions
 
         internal static IPage GuardFromNull(this IPage page)
         {
-            if (page == null) throw new ArgumentNullException(nameof(page));
+            ArgumentNullException.ThrowIfNull(page);
 
             return page;
         }
 
         internal static IResponse GuardFromNull(this IResponse response)
         {
-            if (response == null) throw new ArgumentNullException(nameof(response));
+            ArgumentNullException.ThrowIfNull(response);
 
             return response;
         }
@@ -33,7 +33,7 @@ namespace PuppeteerSharp.Contrib.Extensions
 
         internal static IElementHandle GuardFromNull(this IElementHandle elementHandle)
         {
-            if (elementHandle == null) throw new ArgumentNullException(nameof(elementHandle));
+            ArgumentNullException.ThrowIfNull(elementHandle);
 
             return elementHandle;
         }
