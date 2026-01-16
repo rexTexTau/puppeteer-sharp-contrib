@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -111,7 +112,7 @@ namespace PuppeteerSharp.Contrib.Extensions
             var options = new WaitForFunctionOptions { Polling = WaitForFunctionPollingOption.Mutation };
             if (timeout.HasValue) options.Timeout = timeout;
             await iframe.GuardFromNull().WaitForFunctionAsync(
-                string.Format("async () => document.querySelector('{0}') === null", selector),
+                string.Format(CultureInfo.InvariantCulture, "async () => document.querySelector('{0}') === null", selector),
                 options)
                 .ConfigureAwait(false);
         }

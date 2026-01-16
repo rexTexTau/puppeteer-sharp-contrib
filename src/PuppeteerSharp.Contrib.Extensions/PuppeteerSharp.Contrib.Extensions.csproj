@@ -9,6 +9,7 @@ New extension for IPage and IFrame:
 
 New extension for IElementHandle:
 ◼️ ClickAtRandomPointAsync (useful in case of need to emulate a click in detailed manner)
+    </PackageReleaseNotes>
     <TargetFramework>net8.0</TargetFramework>
     <Version>7.0.0</Version>
     <PackageReleaseNotes>

@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Text.Json;
+using System.Threading.Tasks;
+using PuppeteerSharp.Input;
 
 namespace PuppeteerSharp.Contrib.Extensions
 {
@@ -181,6 +182,7 @@ namespace PuppeteerSharp.Contrib.Extensions
         /// <returns><c>true</c> if the element is hidden.</returns>
         public static async Task<bool> IsHiddenAsync(this IElementHandle elementHandle)
         {
+            ArgumentNullException.ThrowIfNull(elementHandle);
             return !await elementHandle.IsVisibleAsync().ConfigureAwait(false);
         }
 
@@ -289,15 +291,17 @@ namespace PuppeteerSharp.Contrib.Extensions
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
         public static async Task ClickAtRandomPointAsync(this IElementHandle elementHandle, bool isCircular = false, MouseButton button = MouseButton.Left)
         {
+            ArgumentNullException.ThrowIfNull(elementHandle);
             Random rnd = new();
-            var box = await elementHandle.BoundingBoxAsync();
+            var box = await elementHandle.BoundingBoxAsync().ConfigureAwait(false);
 
             if (box == null)
             {
-                await elementHandle.ClickAsync();
+                await elementHandle.ClickAsync().ConfigureAwait(false);
             }
             else
             {
+#pragma warning disable CA5394
                 if (isCircular)
                 {
                     double r = (double)Math.Min(box.Width, box.Height);
@@ -311,15 +315,16 @@ namespace PuppeteerSharp.Contrib.Extensions
                     {
                         OffSet = new Offset((decimal)x, (decimal)y),
                         Button = button,
-                    });
+                    }).ConfigureAwait(false);
                 }
                 else
                 {
                     await elementHandle.ClickAsync(new PuppeteerSharp.Input.ClickOptions
                     {
                         OffSet = new Offset(rnd.Next((int)box.Width * 100) / 100, rnd.Next((int)box.Height * 100) / 100),
-                    });
+                    }).ConfigureAwait(false);
                 }
+#pragma warning restore CA5394
             }
         }
 

@@ -26,7 +26,7 @@ namespace PuppeteerSharp.Contrib.Extensions
 
         internal static IFrame GuardFromNull(this IFrame frame)
         {
-            if (frame == null) throw new ArgumentNullException(nameof(frame));
+            ArgumentNullException.ThrowIfNull(frame);
 
             return frame;
         }

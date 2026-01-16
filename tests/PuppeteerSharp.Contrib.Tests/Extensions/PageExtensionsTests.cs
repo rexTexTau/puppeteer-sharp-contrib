@@ -102,14 +102,14 @@ namespace PuppeteerSharp.Contrib.Tests.Extensions
         {
             await RemoveFoo();
             await Page.WaitForElementsRemovedFromDOMAsync("#foo");
-            Assert.Null(await Page.QuerySelectorWithContentAsync("div", "Foo"));
+            Assert.That(await Page.QuerySelectorWithContentAsync("div", "Foo"), Is.Null);
         }
 
         [Test]
         public async Task WaitForElementsRemovedFromDOMAsync_should_return_if_elements_matching_the_selector_are_removed_from_page()
         {
             Task.WaitAll(Page.WaitForElementsRemovedFromDOMAsync("#foo"), RemoveFoo());
-            Assert.Null(await Page.QuerySelectorWithContentAsync("div", "Foo"));
+            Assert.That(await Page.QuerySelectorWithContentAsync("div", "Foo"), Is.Null);
         }
     }
 }
