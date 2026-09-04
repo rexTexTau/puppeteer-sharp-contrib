@@ -116,5 +116,92 @@ namespace PuppeteerSharp.Contrib.Extensions
                 options)
                 .ConfigureAwait(false);
         }
+
+        /// <summary>
+        /// Scrolls the page to the top.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        /// <param name="smooth">If true, uses smooth scrolling behavior.</param>
+        /// <param name="shake">If true, scrolls down slightly and back up to trigger lazy-loaded content.</param>
+        /// <param name="shakeDelayMs">Delay in ms between shake scroll-down and scroll-back-up.</param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+        public static async Task ScrollToTopAsync(
+            this IPage page,
+            bool smooth = false,
+            bool shake = false,
+            int shakeDelayMs = 500)
+        {
+            var behavior = smooth ? "smooth" : "auto";
+
+            await page.GuardFromNull().EvaluateFunctionAsync(
+                "(behavior) => window.scrollTo({ top: 0, behavior })",
+                behavior).ConfigureAwait(false);
+
+            if (shake)
+            {
+                await page.GuardFromNull().EvaluateFunctionAsync(
+                    "(behavior) => window.scrollBy({ top: 100, behavior })",
+                    behavior).ConfigureAwait(false);
+                await Task.Delay(shakeDelayMs).ConfigureAwait(false);
+                await page.GuardFromNull().EvaluateFunctionAsync(
+                    "(behavior) => window.scrollTo({ top: 0, behavior })",
+                    behavior).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Scrolls the page to the bottom.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        /// <param name="smooth">If true, uses smooth scrolling behavior.</param>
+        /// <param name="shake">If true, scrolls up slightly and back down to trigger lazy-loaded content.</param>
+        /// <param name="shakeDelayMs">Delay in ms between shake scroll-up and scroll-back-down.</param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+        public static async Task ScrollToBottomAsync(
+            this IPage page,
+            bool smooth = false,
+            bool shake = false,
+            int shakeDelayMs = 500)
+        {
+            var behavior = smooth ? "smooth" : "auto";
+
+            await page.GuardFromNull().EvaluateFunctionAsync(
+                "(behavior) => window.scrollTo({ top: document.body.scrollHeight, behavior })",
+                behavior).ConfigureAwait(false);
+
+            if (shake)
+            {
+                await page.GuardFromNull().EvaluateFunctionAsync(
+                    "(behavior) => window.scrollBy({ top: -100, behavior })",
+                    behavior).ConfigureAwait(false);
+                await Task.Delay(shakeDelayMs).ConfigureAwait(false);
+                await page.GuardFromNull().EvaluateFunctionAsync(
+                    "(behavior) => window.scrollTo({ top: document.body.scrollHeight, behavior })",
+                    behavior).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Scrolls the page to a specific position.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        /// <param name="x">Horizontal position in pixels.</param>
+        /// <param name="y">Vertical position in pixels.</param>
+        /// <param name="smooth">If true, uses smooth scrolling behavior.</param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+        public static async Task ScrollToAsync(
+            this IPage page,
+            int x,
+            int y,
+            bool smooth = false)
+        {
+            var behavior = smooth ? "smooth" : "auto";
+
+            await page.GuardFromNull().EvaluateFunctionAsync(
+                "(x, y, behavior) => window.scrollTo({ left: x, top: y, behavior })",
+                x,
+                y,
+                behavior).ConfigureAwait(false);
+        }
     }
 }

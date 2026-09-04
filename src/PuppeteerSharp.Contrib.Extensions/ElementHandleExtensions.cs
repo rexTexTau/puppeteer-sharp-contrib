@@ -328,6 +328,112 @@ namespace PuppeteerSharp.Contrib.Extensions
             }
         }
 
+        /// <summary>
+        /// Scrolls the element to the top.
+        /// </summary>
+        /// <param name="elementHandle">The element.</param>
+        /// <param name="smooth">If true, uses smooth scrolling behavior.</param>
+        /// <param name="shake">If true, scrolls down slightly and back up to trigger lazy-loaded content.</param>
+        /// <param name="shakeDelayMs">Delay in ms between shake scroll-down and scroll-back-up.</param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+        public static async Task ScrollToTopAsync(
+            this IElementHandle elementHandle,
+            bool smooth = false,
+            bool shake = false,
+            int shakeDelayMs = 500)
+        {
+            ArgumentNullException.ThrowIfNull(elementHandle);
+
+            var behavior = smooth ? "smooth" : "auto";
+
+            await elementHandle.EvaluateFunctionAsync(
+                @"(el, behavior) => {
+                    if (el.scrollTo) { el.scrollTo({ top: 0, behavior }); }
+                    else { el.scrollTop = 0; }
+                }",
+                behavior).ConfigureAwait(false);
+
+            if (shake)
+            {
+                await elementHandle.EvaluateFunctionAsync(
+                    "(el) => { el.scrollTop = 100; }").ConfigureAwait(false);
+                await Task.Delay(shakeDelayMs).ConfigureAwait(false);
+                await elementHandle.EvaluateFunctionAsync(
+                    @"(el, behavior) => {
+                        if (el.scrollTo) { el.scrollTo({ top: 0, behavior }); }
+                        else { el.scrollTop = 0; }
+                    }",
+                    behavior).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Scrolls the element to the bottom.
+        /// </summary>
+        /// <param name="elementHandle">The element.</param>
+        /// <param name="smooth">If true, uses smooth scrolling behavior.</param>
+        /// <param name="shake">If true, scrolls up slightly and back down to trigger lazy-loaded content.</param>
+        /// <param name="shakeDelayMs">Delay in ms between shake scroll-up and scroll-back-down.</param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+        public static async Task ScrollToBottomAsync(
+            this IElementHandle elementHandle,
+            bool smooth = false,
+            bool shake = false,
+            int shakeDelayMs = 500)
+        {
+            ArgumentNullException.ThrowIfNull(elementHandle);
+
+            var behavior = smooth ? "smooth" : "auto";
+
+            await elementHandle.EvaluateFunctionAsync(
+                @"(el, behavior) => {
+                    if (el.scrollTo) { el.scrollTo({ top: el.scrollHeight, behavior }); }
+                    else { el.scrollTop = el.scrollHeight; }
+                }",
+                behavior).ConfigureAwait(false);
+
+            if (shake)
+            {
+                await elementHandle.EvaluateFunctionAsync(
+                    "(el) => { el.scrollTop = el.scrollTop - 100; }").ConfigureAwait(false);
+                await Task.Delay(shakeDelayMs).ConfigureAwait(false);
+                await elementHandle.EvaluateFunctionAsync(
+                    @"(el, behavior) => {
+                        if (el.scrollTo) { el.scrollTo({ top: el.scrollHeight, behavior }); }
+                        else { el.scrollTop = el.scrollHeight; }
+                    }",
+                    behavior).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Scrolls the element to a specific position.
+        /// </summary>
+        /// <param name="elementHandle">The element.</param>
+        /// <param name="x">Horizontal position in pixels.</param>
+        /// <param name="y">Vertical position in pixels.</param>
+        /// <param name="smooth">If true, uses smooth scrolling behavior.</param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+        public static async Task ScrollToAsync(
+            this IElementHandle elementHandle,
+            int x,
+            int y,
+            bool smooth = false)
+        {
+            ArgumentNullException.ThrowIfNull(elementHandle);
+
+            var behavior = smooth ? "smooth" : "auto";
+
+            await elementHandle.EvaluateFunctionAsync(
+                @"(el, x, y, behavior) => {
+                    if (el.scrollTo) { el.scrollTo({ left: x, top: y, behavior }); }
+                    else { el.scrollLeft = x; el.scrollTop = y; }
+                }",
+                x,
+                y,
+                behavior).ConfigureAwait(false);
+        }
+
         private static async Task<string> GetPropertyValueAsync(this IElementHandle elementHandle, string propertyName)
         {
             var property = await elementHandle.GuardFromNull().GetPropertyAsync(propertyName).ConfigureAwait(false);
